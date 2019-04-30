@@ -16,7 +16,7 @@ void setup() {
   opencv = new OpenCV(this, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
   opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);  
   sunglasses = loadImage("sunglass.png");
-
+  sunglasses = clearColor(sunglasses, color(255, 255, 255));
   video.start();
 }
 
@@ -42,11 +42,20 @@ void addFilter(Rectangle[] faces, String filter) {
     case "sunglasses":
       for (int i = 0; i < faces.length; i++) {
         println(faces[i].x + "," + faces[i].y);
-        rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+        //rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
         image(sunglasses, faces[i].x, faces[i].y + 20, faces[i].width, faces[i].height/2);
       }
       break;
     default:
       exit();
   }
+}
+PImage clearColor(PImage image, int maskColor) {
+    PImage newImage = createImage(image.width, image.height, ARGB);
+    image.loadPixels();
+    newImage.loadPixels();
+    for(int n = 0; n < newImage.pixels.length; n++)
+        newImage.pixels[n] = image.pixels[n] == maskColor ? 0x00000000 : image.pixels[n] | 0xff000000;
+    newImage.updatePixels();
+    return newImage;
 }
